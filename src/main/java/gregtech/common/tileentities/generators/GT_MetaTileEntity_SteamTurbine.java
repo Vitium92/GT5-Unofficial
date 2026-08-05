@@ -10,11 +10,17 @@ import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicGenera
 import gregtech.api.objects.GT_RenderedTexture;
 import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_Recipe;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGenerator {
 
     public int mEfficiency;
+    private int mLastFluidAmount = 0;
+    private int mSteamAccumulated = 0;
+    private FluidStack mDistilledWater = null;
 
     public GT_MetaTileEntity_SteamTurbine(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier, new String[]{
@@ -33,6 +39,18 @@ public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGener
         onConfigLoad();
     }
 
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setInteger("mSteamAccumulated", this.mSteamAccumulated);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        this.mSteamAccumulated = aNBT.getInteger("mSteamAccumulated");
+    }
+
     public boolean isOutputFacing(byte aSide) {
         return aSide == getBaseMetaTileEntity().getFrontFacing();
     }
@@ -47,11 +65,13 @@ public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGener
 
     @Override
     public String[] getDescription() {
-        String[] desc = new String[mDescriptionArray.length + 2];
+        String[] desc = new String[mDescriptionArray.length + 3];
         System.arraycopy(mDescriptionArray, 0, desc, 0, mDescriptionArray.length);
         desc[mDescriptionArray.length] = "Fuel Efficiency: " + (600 / getEfficiency()) + "%";
         desc[mDescriptionArray.length + 1] = String.format("Consumes up to %sL of Steam per second",
                 (int) (4000 * (8 * Math.pow(4, mTier) + Math.pow(2, mTier)) / (600 / getEfficiency())));
+        desc[mDescriptionArray.length + 2] = String.format("Outputs 1L of Distilled Water per %dL of Steam",
+                getSteamToWaterRatio());
         return desc;
     }
 
@@ -67,14 +87,72 @@ public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGener
         return this.mEfficiency;
     }
 
+    public int getSteamToWaterRatio() {
+        return this.mTier == 1 ? 200 : this.mTier == 2 ? 180 : 160;
+    }
+
     public int getFuelValue(FluidStack aLiquid) {
         if (aLiquid == null) return 0;
         String fluidName = aLiquid.getFluid().getUnlocalizedName(aLiquid);
-        return GT_ModHandler.isSteam(aLiquid) || fluidName.equals("fluid.steam") || fluidName.equals("ic2.fluidSteam") || fluidName.equals("fluid.mfr.steam.still.name") ? 3 : 0;
+        return GT_ModHandler.isSteam(aLiquid) || fluidName.equals("fluid.steam") || fluidName.equals("ic2.fluidSteam") || fluidName.equals("fluid.mfr.steam.still.name") ? 1 : 0;
     }
 
     public int consumedFluidPerOperation(FluidStack aLiquid) {
         return this.mEfficiency;
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        mLastFluidAmount = (mFluid != null) ? mFluid.amount : 0;
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+
+        if (aBaseMetaTileEntity.isServerSide() && mLastFluidAmount > 0 && mFluid != null) {
+            int consumed = mLastFluidAmount - mFluid.amount;
+            if (consumed > 0) {
+                mSteamAccumulated += consumed;
+                while (mSteamAccumulated >= getSteamToWaterRatio()) {
+                    mSteamAccumulated -= getSteamToWaterRatio();
+                    if (mDistilledWater == null) {
+                        mDistilledWater = GT_ModHandler.getDistilledWater(1);
+                    } else {
+                        mDistilledWater.amount += 1;
+                    }
+                }
+            }
+        }
+
+        if (aBaseMetaTileEntity.isServerSide() && mDistilledWater != null) {
+            pushDistilledWater(aBaseMetaTileEntity);
+        }
+    }
+
+    private void pushDistilledWater(IGregTechTileEntity aBaseMetaTileEntity) {
+        boolean foundOutput = false;
+        for (byte i = 1; mDistilledWater != null && i < 6; i++) {
+            if (i != aBaseMetaTileEntity.getFrontFacing()) {
+                IFluidHandler tTileEntity = aBaseMetaTileEntity.getITankContainerAtSide(i);
+                if (tTileEntity != null) {
+                    foundOutput = true;
+                    FluidStack tDrained = aBaseMetaTileEntity.drain(
+                            ForgeDirection.getOrientation(i),
+                            Math.max(1, mDistilledWater.amount / 2), false);
+                    if (tDrained != null) {
+                        int tFilledAmount = tTileEntity.fill(
+                                ForgeDirection.getOrientation(i).getOpposite(), tDrained, false);
+                        if (tFilledAmount > 0) {
+                            tTileEntity.fill(
+                                    ForgeDirection.getOrientation(i).getOpposite(),
+                                    aBaseMetaTileEntity.drain(
+                                            ForgeDirection.getOrientation(i), tFilledAmount, true),
+                                    true);
+                        }
+                    }
+                }
+            }
+        }
+        if (!foundOutput && mDistilledWater != null) {
+            mDistilledWater = null;
+        }
     }
 
     public ITexture[] getFront(byte aColor) {
