@@ -21,6 +21,7 @@ public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGener
     private int mLastFluidAmount = 0;
     private int mSteamAccumulated = 0;
     private FluidStack mDistilledWater = null;
+    private byte mOutputSide = 0;
 
     public GT_MetaTileEntity_SteamTurbine(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier, new String[]{
@@ -43,16 +44,24 @@ public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGener
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setInteger("mSteamAccumulated", this.mSteamAccumulated);
+        aNBT.setByte("mOutputSide", this.mOutputSide);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
         this.mSteamAccumulated = aNBT.getInteger("mSteamAccumulated");
+        this.mOutputSide = aNBT.getByte("mOutputSide");
     }
 
     public boolean isOutputFacing(byte aSide) {
         return aSide == getBaseMetaTileEntity().getFrontFacing();
+    }
+
+    @Override
+    public void onRemoval() {
+        super.onRemoval();
+        this.mOutputSide = 0;
     }
 
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
@@ -127,30 +136,50 @@ public class GT_MetaTileEntity_SteamTurbine extends GT_MetaTileEntity_BasicGener
     }
 
     private void pushDistilledWater(IGregTechTileEntity aBaseMetaTileEntity) {
-        boolean foundOutput = false;
+        byte front = aBaseMetaTileEntity.getFrontFacing();
+
+        if (mOutputSide > 0 && mOutputSide != front) {
+            IFluidHandler tTileEntity = aBaseMetaTileEntity.getITankContainerAtSide(mOutputSide);
+            if (tTileEntity != null) {
+                FluidStack tPush = mDistilledWater.copy();
+                tPush.amount = Math.max(1, mDistilledWater.amount / 2);
+                int tFilledAmount = tTileEntity.fill(
+                        ForgeDirection.getOrientation(mOutputSide).getOpposite(), tPush, false);
+                if (tFilledAmount > 0) {
+                    FluidStack tActual = mDistilledWater.copy();
+                    tActual.amount = tFilledAmount;
+                    tTileEntity.fill(
+                            ForgeDirection.getOrientation(mOutputSide).getOpposite(), tActual, true);
+                    mDistilledWater.amount -= tFilledAmount;
+                    if (mDistilledWater.amount <= 0) mDistilledWater = null;
+                    return;
+                }
+            }
+            mOutputSide = 0;
+        }
+
         for (byte i = 1; mDistilledWater != null && i < 6; i++) {
-            if (i != aBaseMetaTileEntity.getFrontFacing()) {
+            if (i != front) {
                 IFluidHandler tTileEntity = aBaseMetaTileEntity.getITankContainerAtSide(i);
                 if (tTileEntity != null) {
-                    foundOutput = true;
-                    FluidStack tDrained = aBaseMetaTileEntity.drain(
-                            ForgeDirection.getOrientation(i),
-                            Math.max(1, mDistilledWater.amount / 2), false);
-                    if (tDrained != null) {
-                        int tFilledAmount = tTileEntity.fill(
-                                ForgeDirection.getOrientation(i).getOpposite(), tDrained, false);
-                        if (tFilledAmount > 0) {
-                            tTileEntity.fill(
-                                    ForgeDirection.getOrientation(i).getOpposite(),
-                                    aBaseMetaTileEntity.drain(
-                                            ForgeDirection.getOrientation(i), tFilledAmount, true),
-                                    true);
-                        }
+                    FluidStack tPush = mDistilledWater.copy();
+                    tPush.amount = Math.max(1, mDistilledWater.amount / 2);
+                    int tFilledAmount = tTileEntity.fill(
+                            ForgeDirection.getOrientation(i).getOpposite(), tPush, false);
+                    if (tFilledAmount > 0) {
+                        FluidStack tActual = mDistilledWater.copy();
+                        tActual.amount = tFilledAmount;
+                        tTileEntity.fill(
+                                ForgeDirection.getOrientation(i).getOpposite(), tActual, true);
+                        mDistilledWater.amount -= tFilledAmount;
+                        if (mDistilledWater.amount <= 0) mDistilledWater = null;
+                        mOutputSide = i;
+                        return;
                     }
                 }
             }
         }
-        if (!foundOutput && mDistilledWater != null) {
+        if (mDistilledWater != null) {
             mDistilledWater = null;
         }
     }
