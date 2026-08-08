@@ -161,7 +161,7 @@ public class GregTech_API {
     /**
      * For the API Version check
      */
-    public static volatile int VERSION = 509;
+    public static volatile int VERSION = 510;
     @Deprecated
     public static IGT_RecipeAdder sRecipeAdder;
     /**

@@ -171,7 +171,6 @@ public class GT_Container_BasicMachine extends GT_Container_BasicTank {
                 break;
         }
 
-        addSlotToContainer(new Slot(mTileEntity, 1, 80, 63));
         addSlotToContainer(new Slot(mTileEntity, 3, 125, 63));
         addSlotToContainer(new GT_Slot_Render(mTileEntity, tStartIndex++, 53, 63));
     }
@@ -213,6 +212,15 @@ public class GT_Container_BasicMachine extends GT_Container_BasicTank {
     @Override
     public void addCraftingToCrafters(ICrafting par1ICrafting) {
         super.addCraftingToCrafters(par1ICrafting);
+        // Force immediate steam sync so gauge shows correct value on GUI open
+        if (mTileEntity != null && !mTileEntity.isClientSide()) {
+            int tSteam = (int) Math.min(Integer.MAX_VALUE, mTileEntity.getStoredSteam());
+            int tSteamStorage = (int) Math.min(Integer.MAX_VALUE, mTileEntity.getSteamCapacity());
+            par1ICrafting.sendProgressBarUpdate(this, 17, tSteam & 65535);
+            par1ICrafting.sendProgressBarUpdate(this, 18, tSteam >>> 16);
+            par1ICrafting.sendProgressBarUpdate(this, 19, tSteamStorage & 65535);
+            par1ICrafting.sendProgressBarUpdate(this, 20, tSteamStorage >>> 16);
+        }
     }
 
     @Override

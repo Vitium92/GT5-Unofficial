@@ -16,6 +16,7 @@ import gregtech.api.objects.GT_FluidStack;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_OreDictUnificator;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Recipe.GT_Recipe_AssemblyLine;
 import gregtech.api.util.GT_Utility;
@@ -45,7 +46,14 @@ public class GT_RecipeAdder
         if ((aOutput1 != null) && ((aDuration = GregTech_API.sRecipeFile.get("fusion", aOutput1.getFluid().getName(), aDuration)) <= 0)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sFusionRecipes.addRecipe(null, new FluidStack[]{aInput1, aInput2}, new FluidStack[]{aOutput1}, aDuration, aEUt, aStartEU);
+        RecipeMaps.fusionRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .fluidInputs(aInput1, aInput2)
+                .fluidOutputs(aOutput1)
+                .duration(aDuration)
+                .eut(aEUt)
+                .specialValue(aStartEU)
+        );
         return true;
     }
 
@@ -63,7 +71,16 @@ public class GT_RecipeAdder
         if ((aFluidInput != null) && ((aDuration = GregTech_API.sRecipeFile.get("centrifuge", aFluidInput.getFluid().getName(), aDuration)) <= 0)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput1, aOutput2, aOutput3, aOutput4, aOutput5, aOutput6}, null, aChances, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUt, 0);
+        RecipeMaps.centrifugeRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2)
+                .itemOutputs(aOutput1, aOutput2, aOutput3, aOutput4, aOutput5, aOutput6)
+                .outputChances(aChances)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -74,7 +91,13 @@ public class GT_RecipeAdder
         if ((aInput1 != null) && ((aDuration = GregTech_API.sRecipeFile.get("compressor", aInput1, aDuration)) <= 0)) {
                 return false;
         }
-        GT_Recipe.GT_Recipe_Map.sCompressorRecipes.addRecipe(true, new ItemStack[]{aInput1}, new ItemStack[]{aOutput1}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.compressorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1)
+                .itemOutputs(aOutput1)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -92,7 +115,16 @@ public class GT_RecipeAdder
         if ((aFluidInput != null) && ((aDuration = GregTech_API.sRecipeFile.get("electrolyzer", aFluidInput.getFluid().getName(), aDuration)) <= 0)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sElectrolyzerRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput1, aOutput2, aOutput3, aOutput4, aOutput5, aOutput6}, null, aChances, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUt, 0);
+        RecipeMaps.electrolyzerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2)
+                .itemOutputs(aOutput1, aOutput2, aOutput3, aOutput4, aOutput5, aOutput6)
+                .outputChances(aChances)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -125,7 +157,16 @@ public class GT_RecipeAdder
         if (aEUtick <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sChemicalRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput, aOutput2}, null, null, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUtick, 0);
+        RecipeMaps.chemicalReactorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2)
+                .itemOutputs(aOutput, aOutput2)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUtick)
+                .specialValue(isAddingDeprecatedRecipes ? -300 : 0)
+        );
 //      GT_Recipe.GT_Recipe_Map.sMultiblockChemicalRecipes.addRecipe(false, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput, aOutput2}, null, null, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUtick, 0);
         return true;
     }
@@ -143,10 +184,28 @@ public class GT_RecipeAdder
         if (aEUtick <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sChemicalRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput, aOutput2}, null, null, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUtick, isAddingDeprecatedRecipes ? -300 : 0);
+        RecipeMaps.chemicalReactorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2)
+                .itemOutputs(aOutput, aOutput2)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUtick)
+                .specialValue(isAddingDeprecatedRecipes ? -300 : 0)
+        );
         if (!(aInput1 != null && aInput1.getItem() instanceof GT_IntegratedCircuit_Item && aInput1.getItemDamage() >= 10)
         		&& !(aInput2 != null && aInput2.getItem() instanceof GT_IntegratedCircuit_Item && aInput2.getItemDamage() >= 10)) {
-            GT_Recipe.GT_Recipe_Map.sMultiblockChemicalRecipes.addRecipe(false, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput, aOutput2}, null, null, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUtick, isAddingDeprecatedRecipes ? -300 : 0);        	
+            RecipeMaps.largeChemicalReactorRecipes.add(
+                GT_Values.RA.stdBuilder().optimize(false)
+                    .itemInputs(aInput1, aInput2)
+                    .itemOutputs(aOutput, aOutput2)
+                    .fluidInputs(aFluidInput)
+                    .fluidOutputs(aFluidOutput)
+                    .duration(aDuration)
+                    .eut(aEUtick)
+                    .specialValue(isAddingDeprecatedRecipes ? -300 : 0)
+            );
         }
         return true;
     }
@@ -158,7 +217,15 @@ public class GT_RecipeAdder
     	if (aEUtick <= 0) {
     		return false;
     	}
-        GT_Recipe.GT_Recipe_Map.sMultiblockChemicalRecipes.addRecipe(false, aInputs, aOutputs, null, null, aFluidInputs, aFluidOutputs, aDuration, aEUtick, 0);
+        RecipeMaps.largeChemicalReactorRecipes.add(
+            GT_Values.RA.stdBuilder().optimize(false)
+                .itemInputs(aInputs)
+                .itemOutputs(aOutputs)
+                .fluidInputs(aFluidInputs)
+                .fluidOutputs(aFluidOutputs)
+                .duration(aDuration)
+                .eut(aEUtick)
+        );
     	return true;
     }
     
@@ -188,8 +255,16 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("blastfurnace", aInput1, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2}, new ItemStack[]{aOutput1, aOutput2}, null, null, 
-        		new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUt, aLevel);
+        RecipeMaps.blastFurnaceRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2)
+                .itemOutputs(aOutput1, aOutput2)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+                .specialValue(aLevel)
+        );
         return true;
     }
 
@@ -205,11 +280,29 @@ public class GT_RecipeAdder
         }
         Materials[] coals = new Materials[]{Materials.Coal, Materials.Charcoal};
         for (Materials coal : coals) {
-        	GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, coal.getGems(aCoalAmount)}, new ItemStack[]{aOutput1, aOutput2, Materials.DarkAsh.getDustTiny(aCoalAmount)}, null, null, null, null, aDuration, 0, 0);
-        	GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, coal.getDust(aCoalAmount)}, new ItemStack[]{aOutput1, aOutput2, Materials.DarkAsh.getDustTiny(aCoalAmount)}, null, null, null, null, aDuration, 0, 0);
+        	RecipeMaps.primitiveBlastFurnaceRecipes.add(
+                GT_Values.RA.stdBuilder()
+                    .itemInputs(aInput1, aInput2, coal.getGems(aCoalAmount))
+                    .itemOutputs(aOutput1, aOutput2, Materials.DarkAsh.getDustTiny(aCoalAmount))
+                    .duration(aDuration)
+                    .eut(0)
+            );
+        	RecipeMaps.primitiveBlastFurnaceRecipes.add(
+                GT_Values.RA.stdBuilder()
+                    .itemInputs(aInput1, aInput2, coal.getDust(aCoalAmount))
+                    .itemOutputs(aOutput1, aOutput2, Materials.DarkAsh.getDustTiny(aCoalAmount))
+                    .duration(aDuration)
+                    .eut(0)
+            );
         }        
         if (Loader.isModLoaded("Railcraft")) { 
-        	GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, RailcraftToolItems.getCoalCoke(aCoalAmount / 2)}, new ItemStack[]{aOutput1, aOutput2, Materials.Ash.getDustTiny(aCoalAmount / 2)}, null, null, null, null, aDuration * 2 / 3, 0, 0);
+        	RecipeMaps.primitiveBlastFurnaceRecipes.add(
+                GT_Values.RA.stdBuilder()
+                    .itemInputs(aInput1, aInput2, RailcraftToolItems.getCoalCoke(aCoalAmount / 2))
+                    .itemOutputs(aOutput1, aOutput2, Materials.Ash.getDustTiny(aCoalAmount / 2))
+                    .duration(aDuration * 2 / 3)
+                    .eut(0)
+            );
         }
         if ((aInput1 == null || aInput1.stackSize <= 6 ) && (aInput2 == null || aInput2.stackSize <= 6 ) && 
         		(aOutput1 == null || aOutput1.stackSize <= 6 ) && (aOutput2 == null || aOutput2.stackSize <= 6 )) {
@@ -218,11 +311,29 @@ public class GT_RecipeAdder
         	aOutput1 = aOutput1 == null ? null : GT_Utility.copyAmount(aOutput1.stackSize * 10, aOutput1);
         	aOutput2 = aOutput2 == null ? null : GT_Utility.copyAmount(aOutput2.stackSize * 10, aOutput2);
             for (Materials coal : coals) {
-            	GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, coal.getBlocks(aCoalAmount)}, new ItemStack[]{aOutput1, aOutput2, Materials.DarkAsh.getDust(aCoalAmount)}, null, null, null, null, aDuration * 10, 0, 0);
-            	GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, coal.getBlocks(aCoalAmount)}, new ItemStack[]{aOutput1, aOutput2, Materials.DarkAsh.getDust(aCoalAmount)}, null, null, null, null, aDuration * 10, 0, 0);
+            	RecipeMaps.primitiveBlastFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput1, aInput2, coal.getBlocks(aCoalAmount))
+                        .itemOutputs(aOutput1, aOutput2, Materials.DarkAsh.getDust(aCoalAmount))
+                        .duration(aDuration * 10)
+                        .eut(0)
+                );
+            	RecipeMaps.primitiveBlastFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput1, aInput2, coal.getBlocks(aCoalAmount))
+                        .itemOutputs(aOutput1, aOutput2, Materials.DarkAsh.getDust(aCoalAmount))
+                        .duration(aDuration * 10)
+                        .eut(0)
+                );
             }
             if (Loader.isModLoaded("Railcraft")) { 
-            	GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, EnumCube.COKE_BLOCK.getItem(aCoalAmount / 2)}, new ItemStack[]{aOutput1, aOutput2, Materials.Ash.getDust(aCoalAmount / 2)}, null, null, null, null, aDuration * 20 / 3, 0, 0);
+            	RecipeMaps.primitiveBlastFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput1, aInput2, EnumCube.COKE_BLOCK.getItem(aCoalAmount / 2))
+                        .itemOutputs(aOutput1, aOutput2, Materials.Ash.getDust(aCoalAmount / 2))
+                        .duration(aDuration * 20 / 3)
+                        .eut(0)
+                );
             }
         }
         return true;
@@ -289,7 +400,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("cutting", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sCutterRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2}, null, new FluidStack[]{aLubricant}, null, aDuration, aEUt, 0);
+        RecipeMaps.cuttingMachineRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2)
+                .fluidInputs(aLubricant)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -300,9 +418,30 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("cutting", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sCutterRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2}, null, new FluidStack[]{Materials.Water.getFluid(Math.max(4, Math.min(1000, aDuration * aEUt / 320)))}, null, aDuration * 2, aEUt, 0);
-        GT_Recipe.GT_Recipe_Map.sCutterRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2}, null, new FluidStack[]{GT_ModHandler.getDistilledWater(Math.max(3, Math.min(750, aDuration * aEUt / 426)))}, null, aDuration * 2, aEUt, 0);
-        GT_Recipe.GT_Recipe_Map.sCutterRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2}, null, new FluidStack[]{Materials.Lubricant.getFluid(Math.max(1, Math.min(250, aDuration * aEUt / 1280)))}, null, aDuration, aEUt, 0);
+        RecipeMaps.cuttingMachineRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2)
+                .fluidInputs(new FluidStack[]{Materials.Water.getFluid(Math.max(4, Math.min(1000, aDuration * aEUt / 320)))})
+                .duration(aDuration * 2)
+                .eut(aEUt)
+        );
+        RecipeMaps.cuttingMachineRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2)
+                .fluidInputs(new FluidStack[]{GT_ModHandler.getDistilledWater(Math.max(3, Math.min(750, aDuration * aEUt / 426)))})
+                .duration(aDuration * 2)
+                .eut(aEUt)
+        );
+        RecipeMaps.cuttingMachineRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2)
+                .fluidInputs(new FluidStack[]{Materials.Lubricant.getFluid(Math.max(1, Math.min(250, aDuration * aEUt / 1280)))})
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
     
@@ -333,7 +472,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("assembling", aOutput1, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2 == null ? aInput1 : aInput2}, new ItemStack[]{aOutput1}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.assemblerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2 == null ? aInput1 : aInput2)
+                .itemOutputs(aOutput1)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -351,7 +496,14 @@ public class GT_RecipeAdder
     	if ((aDuration = GregTech_API.sRecipeFile.get("assembling", aOutput1, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.addRecipe(true, aInputs, new ItemStack[]{aOutput1}, null, new FluidStack[]{aFluidInput}, null, aDuration, aEUt, 0);
+        RecipeMaps.assemblerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInputs)
+                .itemOutputs(aOutput1)
+                .fluidInputs(aFluidInput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -362,7 +514,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("wiremill", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sWiremillRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.wiremillRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -373,7 +531,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("polarizer", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sPolarizerRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.polarizerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -395,7 +559,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("extruder", aOutput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sExtruderRecipes.addRecipe(true, new ItemStack[]{aInput, aShape}, new ItemStack[]{aOutput}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.extruderRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput, aShape)
+                .itemOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -406,7 +576,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("slicer", aOutput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sSlicerRecipes.addRecipe(true, new ItemStack[]{aInput, aShape}, new ItemStack[]{aOutput}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.slicerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput, aShape)
+                .itemOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -417,7 +593,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("orewasher", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sOreWasherRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2, aOutput3}, null, new FluidStack[]{aFluidInput}, null, aDuration, aEUt, 0);
+        RecipeMaps.oreWasherRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2, aOutput3)
+                .fluidInputs(aFluidInput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -435,13 +618,37 @@ public class GT_RecipeAdder
         int tITNT = Math.max(1, tExplosives/4);
         //new GT_Recipe(aInput1, aInput2, aOutput1, aOutput2);
         if(tGunpowder<65){
-        	GT_Recipe.GT_Recipe_Map.sImplosionRecipes.addRecipe(true, new ItemStack[]{aInput1, ItemList.Block_Powderbarrel.get(tGunpowder, new Object[0])}, new ItemStack[]{aOutput1, aOutput2}, null, null, null, null, 20, 30, 0);
+        	RecipeMaps.implosionCompressorRecipes.add(
+                GT_Values.RA.stdBuilder()
+                    .itemInputs(aInput1, ItemList.Block_Powderbarrel.get(tGunpowder, new Object[0]))
+                    .itemOutputs(aOutput1, aOutput2)
+                    .duration(20)
+                    .eut(30)
+            );
         }
         if(tDynamite<17){
-        	GT_Recipe.GT_Recipe_Map.sImplosionRecipes.addRecipe(true, new ItemStack[]{aInput1, GT_ModHandler.getIC2Item("dynamite", tDynamite, null)}, new ItemStack[]{aOutput1, aOutput2}, null, null, null, null, 20, 30, 0);
+        	RecipeMaps.implosionCompressorRecipes.add(
+                GT_Values.RA.stdBuilder()
+                    .itemInputs(aInput1, GT_ModHandler.getIC2Item("dynamite", tDynamite, null))
+                    .itemOutputs(aOutput1, aOutput2)
+                    .duration(20)
+                    .eut(30)
+            );
         }
-        GT_Recipe.GT_Recipe_Map.sImplosionRecipes.addRecipe(true, new ItemStack[]{aInput1, new ItemStack(Blocks.tnt,tTNT)}, new ItemStack[]{aOutput1, aOutput2}, null, null, null, null, 20, 30, 0);
-        GT_Recipe.GT_Recipe_Map.sImplosionRecipes.addRecipe(true, new ItemStack[]{aInput1, GT_ModHandler.getIC2Item("industrialTnt", tITNT, null)}, new ItemStack[]{aOutput1, aOutput2}, null, null, null, null, 20, 30, 0);
+        RecipeMaps.implosionCompressorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, new ItemStack(Blocks.tnt,tTNT))
+                .itemOutputs(aOutput1, aOutput2)
+                .duration(20)
+                .eut(30)
+        );
+        RecipeMaps.implosionCompressorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, GT_ModHandler.getIC2Item("industrialTnt", tITNT, null))
+                .itemOutputs(aOutput1, aOutput2)
+                .duration(20)
+                .eut(30)
+        );
         
         return true;
     }
@@ -474,7 +681,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("distillation", aInput.getUnlocalizedName(), aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sDistillationRecipes.addRecipe(false, null, new ItemStack[]{aOutput2}, null, new FluidStack[]{aInput}, aOutputs, Math.max(1, aDuration), Math.max(1, aEUt), 0);
+        RecipeMaps.distillationTowerRecipes.add(
+            GT_Values.RA.stdBuilder().optimize(false)
+                .itemOutputs(aOutput2)
+                .fluidInputs(aInput)
+                .fluidOutputs(aOutputs)
+                .duration(Math.max(1, aDuration))
+                .eut(Math.max(1, aEUt))
+        );
         return false;
     }
 
@@ -522,7 +736,13 @@ public class GT_RecipeAdder
         if (!GregTech_API.sRecipeFile.get("forgehammer", aOutput1, true)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sHammerRecipes.addRecipe(true, new ItemStack[]{aInput1}, new ItemStack[]{aOutput1}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.hammerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1)
+                .itemOutputs(aOutput1)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -533,7 +753,13 @@ public class GT_RecipeAdder
         if (!GregTech_API.sRecipeFile.get("boxing", aFullBox, true)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sBoxinatorRecipes.addRecipe(true, new ItemStack[]{aContainedItem, aEmptyBox}, new ItemStack[]{aFullBox}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.packagerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aContainedItem, aEmptyBox)
+                .itemOutputs(aFullBox)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -544,7 +770,13 @@ public class GT_RecipeAdder
         if (!GregTech_API.sRecipeFile.get("unboxing", aFullBox, true)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sUnboxinatorRecipes.addRecipe(true, new ItemStack[]{aFullBox}, new ItemStack[]{aContainedItem, aEmptyBox}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.unpackagerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aFullBox)
+                .itemOutputs(aContainedItem, aEmptyBox)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -555,7 +787,13 @@ public class GT_RecipeAdder
         if (!GregTech_API.sRecipeFile.get("thermalcentrifuge", aInput, true)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sThermalCentrifugeRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2, aOutput3}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.thermalCentrifugeRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2, aOutput3)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -566,7 +804,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("amplifier", aAmplifierItem, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sAmplifiers.addRecipe(true, new ItemStack[]{aAmplifierItem}, null, null, null, new FluidStack[]{Materials.UUAmplifier.getFluid(aAmplifierAmountOutputted)}, aDuration, 32, 0);
+        RecipeMaps.uuAmplifierRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aAmplifierItem)
+                .fluidOutputs(Materials.UUAmplifier.getFluid(aAmplifierAmountOutputted))
+                .duration(aDuration)
+                .eut(32)
+        );
         return true;
     }
 
@@ -577,7 +821,14 @@ public class GT_RecipeAdder
         if (!GregTech_API.sRecipeFile.get("brewing", aOutput.getUnlocalizedName(), true)) {
             return false;
         }
-        GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sBrewingRecipes.addRecipe(false, new ItemStack[]{aIngredient}, null, null, new FluidStack[]{new FluidStack(aInput, 750)}, new FluidStack[]{new FluidStack(aOutput, 750)}, 128, 4, 0);
+        GT_Recipe tRecipe = RecipeMaps.brewingRecipes.add(
+            GT_Values.RA.stdBuilder().optimize(false)
+                .itemInputs(aIngredient)
+                .fluidInputs(new FluidStack(aInput, 750))
+                .fluidOutputs(new FluidStack(aOutput, 750))
+                .duration(128)
+                .eut(4)
+        );
         if ((aHidden) && (tRecipe != null)) {
             tRecipe.mHidden = true;
         }
@@ -591,7 +842,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("fermenting", aOutput.getFluid().getUnlocalizedName(), aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sFermentingRecipes.addRecipe(false, null, null, null, new FluidStack[]{aInput}, new FluidStack[]{aOutput}, aDuration, 2, 0);
+        GT_Recipe tRecipe = RecipeMaps.fermentingRecipes.add(
+            GT_Values.RA.stdBuilder().optimize(false)
+                .fluidInputs(aInput)
+                .fluidOutputs(aOutput)
+                .duration(aDuration)
+                .eut(2)
+        );
         if ((aHidden) && (tRecipe != null)) {
             tRecipe.mHidden = true;
         }
@@ -635,7 +892,15 @@ public class GT_RecipeAdder
         	}
         	aDuration = (aDuration + tScale - 1) / tScale;
         }
-        GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sDistilleryRecipes.addRecipe(true, new ItemStack[]{aCircuit}, new ItemStack[]{aSolidOutput}, null, new FluidStack[]{aInput}, new FluidStack[]{aOutput}, aDuration, aEUt, 0);
+        GT_Recipe tRecipe = RecipeMaps.distilleryRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aCircuit)
+                .itemOutputs(aSolidOutput)
+                .fluidInputs(aInput)
+                .fluidOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         if ((aHidden) && (tRecipe != null)) {
             tRecipe.mHidden = true;
         }
@@ -667,7 +932,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("fluidsolidifier", aOutput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sFluidSolidficationRecipes.addRecipe(true, new ItemStack[]{aMold}, new ItemStack[]{aOutput}, null, new FluidStack[]{aInput}, null, aDuration, aEUt, 0);
+        RecipeMaps.fluidSolidificationRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aMold)
+                .itemOutputs(aOutput)
+                .fluidInputs(aInput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
     
@@ -689,7 +961,15 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("fluidsmelter", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe tRecipe =GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aRemains}, null, new int[]{aChance}, null, new FluidStack[]{aOutput}, aDuration, aEUt, 0);
+        GT_Recipe tRecipe = RecipeMaps.fluidExtractionRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aRemains)
+                .outputChances(new int[]{aChance})
+                .fluidOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         if ((hidden) && (tRecipe != null)) {
            tRecipe.mHidden = true;
         }
@@ -709,7 +989,15 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("fluidextractor", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aRemains}, null, new int[]{aChance}, null, new FluidStack[]{aOutput}, aDuration, aEUt, 0);
+        RecipeMaps.fluidExtractionRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aRemains)
+                .outputChances(new int[]{aChance})
+                .fluidOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -723,7 +1011,15 @@ public class GT_RecipeAdder
         if (!GregTech_API.sRecipeFile.get("fluidcanner", aOutput, true)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput}, null, new FluidStack[]{aFluidInput == null ? null : aFluidInput}, new FluidStack[]{aFluidOutput == null ? null : aFluidOutput}, aFluidOutput == null ? aFluidInput.amount / 62 : aFluidOutput.amount / 62, 1, 0);
+        RecipeMaps.fluidCannerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput)
+                .fluidInputs(aFluidInput == null ? null : aFluidInput)
+                .fluidOutputs(aFluidOutput == null ? null : aFluidOutput)
+                .duration(aFluidOutput == null ? aFluidInput.amount / 62 : aFluidOutput.amount / 62)
+                .eut(1)
+        );
         return true;
     }
 
@@ -734,7 +1030,15 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("chemicalbath", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sChemicalBathRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2, aOutput3}, null, aChances, new FluidStack[]{aBathingFluid}, null, aDuration, aEUt, 0);
+        RecipeMaps.chemicalBathRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2, aOutput3)
+                .outputChances(aChances)
+                .fluidInputs(aBathingFluid)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -745,7 +1049,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("electromagneticseparator", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sElectroMagneticSeparatorRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput1, aOutput2, aOutput3}, null, aChances, null, null, aDuration, aEUt, 0);
+        RecipeMaps.electromagneticSeparatorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput1, aOutput2, aOutput3)
+                .outputChances(aChances)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -756,7 +1067,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("extractor", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sExtractorRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.extractorRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -767,7 +1084,15 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("printer", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sPrinterRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput}, aSpecialSlot, null, new FluidStack[]{aFluid}, null, aDuration, aEUt, 0);
+        RecipeMaps.printerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput)
+                .special(aSpecialSlot)
+                .fluidInputs(aFluid)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
     
@@ -785,7 +1110,16 @@ public class GT_RecipeAdder
 		if (!GT_Mod.gregtechproxy.mEnableCleanroom){
 			aCleanroom = false;
 		}
-        GT_Recipe.GT_Recipe_Map.sAutoclaveRecipes.addRecipe(true, new ItemStack[]{aInput}, new ItemStack[]{aOutput}, null, new int[]{aChance}, new FluidStack[]{aFluid}, null, aDuration, aEUt, aCleanroom ? -100 : 0);
+        RecipeMaps.autoclaveRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput)
+                .itemOutputs(aOutput)
+                .outputChances(new int[]{aChance})
+                .fluidInputs(aFluid)
+                .duration(aDuration)
+                .eut(aEUt)
+                .specialValue(aCleanroom ? -100 : 0)
+        );
         return true;
     }
 
@@ -799,7 +1133,15 @@ public class GT_RecipeAdder
         if ((aFluidOutput != null) && ((aDuration = GregTech_API.sRecipeFile.get("mixer", aFluidOutput.getFluid().getName(), aDuration)) <= 0)) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sMixerRecipes.addRecipe(true, new ItemStack[]{aInput1, aInput2, aInput3, aInput4}, new ItemStack[]{aOutput}, null, null, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUt, 0);
+        RecipeMaps.mixerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInput1, aInput2, aInput3, aInput4)
+                .itemOutputs(aOutput)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
     
@@ -817,7 +1159,14 @@ public class GT_RecipeAdder
 		if (!GT_Mod.gregtechproxy.mEnableCleanroom){
 			aCleanroom = false;
 		}
-        GT_Recipe.GT_Recipe_Map.sLaserEngraverRecipes.addRecipe(true, new ItemStack[]{aItemToEngrave, aLens}, new ItemStack[]{aEngravedItem}, null, null, null, aDuration, aEUt, aCleanroom ? -200 : 0);
+        RecipeMaps.laserEngraverRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aItemToEngrave, aLens)
+                .itemOutputs(aEngravedItem)
+                .duration(aDuration)
+                .eut(aEUt)
+                .specialValue(aCleanroom ? -200 : 0)
+        );
         return true;
     }
 
@@ -828,7 +1177,13 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("press", aImprintedItem, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sPressRecipes.addRecipe(true, new ItemStack[]{aItemToImprint, aForm}, new ItemStack[]{aImprintedItem}, null, null, null, aDuration, aEUt, 0);
+        RecipeMaps.formingPressRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aItemToImprint, aForm)
+                .itemOutputs(aImprintedItem)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -839,7 +1194,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("fluidheater", aOutput.getFluid().getUnlocalizedName(), aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sFluidHeaterRecipes.addRecipe(true, new ItemStack[]{aCircuit}, null, null, new FluidStack[]{aInput}, new FluidStack[]{aOutput}, aDuration, aEUt, 0);
+        RecipeMaps.fluidHeaterRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aCircuit)
+                .fluidInputs(aInput)
+                .fluidOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -852,7 +1214,14 @@ public class GT_RecipeAdder
                 if ((aDuration = GregTech_API.sRecipeFile.get("sifter", aItemToSift, aDuration)) <= 0) {
                     return false;
                 }
-                GT_Recipe.GT_Recipe_Map.sSifterRecipes.addRecipe(true, new ItemStack[]{aItemToSift}, aSiftedItems, null, aChances, null, null, aDuration, aEUt, 0);
+                RecipeMaps.sifterRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aItemToSift)
+                        .itemOutputs(aSiftedItems)
+                        .outputChances(aChances)
+                        .duration(aDuration)
+                        .eut(aEUt)
+                );
                 return true;
             }
         }
@@ -873,14 +1242,31 @@ public class GT_RecipeAdder
                 if ((aDuration = GregTech_API.sRecipeFile.get("arcfurnace", aInput, aDuration)) <= 0) {
                     return false;
                 }
-                GT_Recipe sRecipe = GT_Recipe.GT_Recipe_Map.sArcFurnaceRecipes.addRecipe(true, new ItemStack[]{aInput}, aOutputs, null, aChances, new FluidStack[]{Materials.Oxygen.getGas(aDuration)}, null, Math.max(1, aDuration), Math.max(1, aEUt), 0);
+                GT_Recipe sRecipe = RecipeMaps.arcFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput)
+                        .itemOutputs(aOutputs)
+                        .outputChances(aChances)
+                        .fluidInputs(Materials.Oxygen.getGas(aDuration))
+                        .duration(Math.max(1, aDuration))
+                        .eut(Math.max(1, aEUt))
+                );
                 if ((hidden) && (sRecipe != null)) {
                    sRecipe.mHidden = true;
                 }
                 for (Materials tMaterial : new Materials[]{Materials.Argon, Materials.Nitrogen}) {
                     if (tMaterial.mPlasma != null) {
                         int tPlasmaAmount = (int) Math.max(1L, aDuration / (tMaterial.getMass() * 16L));
-                        GT_Recipe tRecipe =GT_Recipe.GT_Recipe_Map.sPlasmaArcFurnaceRecipes.addRecipe(true, new ItemStack[]{aInput}, aOutputs, null, aChances, new FluidStack[]{tMaterial.getPlasma(tPlasmaAmount)}, new FluidStack[]{tMaterial.getGas(tPlasmaAmount)}, Math.max(1, aDuration / 16), Math.max(1, aEUt / 3), 0);
+                        GT_Recipe tRecipe = RecipeMaps.plasmaArcFurnaceRecipes.add(
+                            GT_Values.RA.stdBuilder()
+                                .itemInputs(aInput)
+                                .itemOutputs(aOutputs)
+                                .outputChances(aChances)
+                                .fluidInputs(tMaterial.getPlasma(tPlasmaAmount))
+                                .fluidOutputs(tMaterial.getGas(tPlasmaAmount))
+                                .duration(Math.max(1, aDuration / 16))
+                                .eut(Math.max(1, aEUt / 3))
+                        );
                         if ((hidden) && (tRecipe != null)) {
                            tRecipe.mHidden = true;
                         }
@@ -901,7 +1287,15 @@ public class GT_RecipeAdder
                 if ((aDuration = GregTech_API.sRecipeFile.get("arcfurnace", aInput, aDuration)) <= 0) {
                     return false;
                 }
-                GT_Recipe.GT_Recipe_Map.sArcFurnaceRecipes.addRecipe(true, new ItemStack[]{aInput}, aOutputs, null, aChances, new FluidStack[]{aFluidInput}, null, Math.max(1, aDuration), Math.max(1, aEUt), 0);
+                RecipeMaps.arcFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput)
+                        .itemOutputs(aOutputs)
+                        .outputChances(aChances)
+                        .fluidInputs(aFluidInput)
+                        .duration(Math.max(1, aDuration))
+                        .eut(Math.max(1, aEUt))
+                );
                 return true;
             }
         }
@@ -917,7 +1311,15 @@ public class GT_RecipeAdder
                 if ((aDuration = GregTech_API.sRecipeFile.get("arcfurnace", aInput, aDuration)) <= 0) {
                     return false;
                 }
-                GT_Recipe.GT_Recipe_Map.sPlasmaArcFurnaceRecipes.addRecipe(true, new ItemStack[]{aInput}, aOutputs, null, aChances, new FluidStack[]{aFluidInput}, null, Math.max(1, aDuration), Math.max(1, aEUt), 0);
+                RecipeMaps.plasmaArcFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput)
+                        .itemOutputs(aOutputs)
+                        .outputChances(aChances)
+                        .fluidInputs(aFluidInput)
+                        .duration(Math.max(1, aDuration))
+                        .eut(Math.max(1, aEUt))
+                );
                 return true;
             }
         }
@@ -933,7 +1335,16 @@ public class GT_RecipeAdder
                 if ((aDuration = GregTech_API.sRecipeFile.get("arcfurnace", aInput, aDuration)) <= 0) {
                     return false;
                 }
-                GT_Recipe.GT_Recipe_Map.sPlasmaArcFurnaceRecipes.addRecipe(true, new ItemStack[]{aInput}, aOutputs, null, aChances, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, Math.max(1, aDuration), Math.max(1, aEUt), 0);
+                RecipeMaps.plasmaArcFurnaceRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput)
+                        .itemOutputs(aOutputs)
+                        .outputChances(aChances)
+                        .fluidInputs(aFluidInput)
+                        .fluidOutputs(aFluidOutput)
+                        .duration(Math.max(1, aDuration))
+                        .eut(Math.max(1, aEUt))
+                );
                 return true;
             }
         }
@@ -954,7 +1365,14 @@ public class GT_RecipeAdder
                 if ((aDuration = GregTech_API.sRecipeFile.get("pulveriser", aInput, aDuration)) <= 0) {
                     return false;
                 }
-                GT_Recipe tRecipe =GT_Recipe.GT_Recipe_Map.sMaceratorRecipes.addRecipe(true, new ItemStack[]{aInput}, aOutputs, null, aChances, null, null, aDuration, aEUt, 0);
+                GT_Recipe tRecipe = RecipeMaps.maceratorRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(aInput)
+                        .itemOutputs(aOutputs)
+                        .outputChances(aChances)
+                        .duration(aDuration)
+                        .eut(aEUt)
+                );
                 if ((hidden) && (tRecipe != null)) {
                    tRecipe.mHidden = true;
                 }
@@ -972,7 +1390,15 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("pyrolyse", aInput, aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sPyrolyseRecipes.addRecipe(false, new ItemStack[]{aInput, ItemList.Circuit_Integrated.getWithDamage(0L, intCircuit, new Object[0])}, new ItemStack[]{aOutput}, null, null, new FluidStack[]{aFluidInput}, new FluidStack[]{aFluidOutput}, aDuration, aEUt, 0);
+        RecipeMaps.pyrolyseRecipes.add(
+            GT_Values.RA.stdBuilder().optimize(false)
+                .itemInputs(aInput, ItemList.Circuit_Integrated.getWithDamage(0L, intCircuit, new Object[0]))
+                .itemOutputs(aOutput)
+                .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -1000,8 +1426,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("cracking", aInput.getUnlocalizedName(), aDuration)) <= 0) {
             return false;
         }
-        GT_Recipe.GT_Recipe_Map.sCrakingRecipes.addRecipe(false, new ItemStack[]{GT_Utility.getIntegratedCircuit(circuitConfig)}, null, null, null, 
-        		new FluidStack[]{aInput, aInput2}, new FluidStack[]{aOutput}, aDuration, aEUt, 0);
+        RecipeMaps.oilCrackerRecipes.add(
+            GT_Values.RA.stdBuilder().optimize(false)
+                .itemInputs(GT_Utility.getIntegratedCircuit(circuitConfig))
+                .fluidInputs(aInput, aInput2)
+                .fluidOutputs(aOutput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
         return true;
     }
 
@@ -1082,7 +1514,14 @@ public class GT_RecipeAdder
         if ((aDuration = GregTech_API.sRecipeFile.get("circuitassembler", aOutput, aDuration)) <= 0) {
             return false;
         } 
-        GT_Recipe.GT_Recipe_Map.sCircuitAssemblerRecipes.addRecipe(true, aInputs, new ItemStack[]{aOutput}, null, null, new FluidStack[]{aFluidInput}, null, aDuration, aEUt, 0);
+        RecipeMaps.circuitAssemblerRecipes.add(
+            GT_Values.RA.stdBuilder()
+                .itemInputs(aInputs)
+                .itemOutputs(aOutput)
+                .fluidInputs(aFluidInput)
+                .duration(aDuration)
+                .eut(aEUt)
+        );
 		return true;    
 	}
 
@@ -1115,6 +1554,11 @@ public class GT_RecipeAdder
 
 	public void setIsAddingDeprecatedRecipes(boolean isAddingDeprecatedRecipes) {
 		this.isAddingDeprecatedRecipes = isAddingDeprecatedRecipes;
+	}
+
+	@Override
+	public gregtech.api.util.GTRecipeBuilder stdBuilder() {
+		return new gregtech.api.util.GTRecipeBuilder();
 	}
 
 }

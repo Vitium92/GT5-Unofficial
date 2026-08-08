@@ -684,4 +684,10 @@ public interface IGT_RecipeAdder {
 	 */
 	public void setIsAddingDeprecatedRecipes(boolean isAddingDeprecatedRecipes);
 
+	/**
+	 * Creates a new GTRecipeBuilder for fluent recipe construction.
+	 * Used by Minetweaker/GTNH-style recipe API.
+	 */
+	public gregtech.api.util.GTRecipeBuilder stdBuilder();
+
 }

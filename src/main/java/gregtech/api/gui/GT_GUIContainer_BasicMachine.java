@@ -1,7 +1,11 @@
 package gregtech.api.gui;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicMachine;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,9 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
     public final String mName, mNEI;
     public final byte mProgressBarDirection, mProgressBarAmount;
 
+    private final ResourceLocation mSteamGaugeTexture;
+    private final GT_CircularGaugeDrawable mSteamGauge;
+
     public GT_GUIContainer_BasicMachine(InventoryPlayer aInventoryPlayer, IGregTechTileEntity aTileEntity, String aName, String aTextureFile, String aNEI) {
         this(aInventoryPlayer, aTileEntity, aName, aTextureFile, aNEI, (byte) 0, (byte) 1);
     }
@@ -30,6 +37,13 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
         mProgressBarAmount = (byte) Math.max(1, aProgressBarAmount);
         mName = aName;
         mNEI = aNEI;
+
+        if (aTextureFile.toLowerCase().contains("steel")) {
+            mSteamGaugeTexture = new ResourceLocation("gregtech:textures/gui/steam_dial_steel.png");
+        } else {
+            mSteamGaugeTexture = new ResourceLocation("gregtech:textures/gui/steam_dial.png");
+        }
+        mSteamGauge = new GT_CircularGaugeDrawable();
     }
 
     @Override
@@ -41,6 +55,14 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         fontRendererObj.drawString(mName, 8, 4, 4210752);
+    }
+
+    private boolean isSteamPowered() {
+        if (mContainer != null && mContainer.mTileEntity != null) {
+            return mContainer.mTileEntity.getMetaTileEntity() instanceof GT_MetaTileEntity_BasicMachine
+                    && ((GT_MetaTileEntity_BasicMachine) mContainer.mTileEntity.getMetaTileEntity()).isSteampowered();
+        }
+        return false;
     }
 
     private void drawTooltip(int x2, int y2) {
@@ -56,6 +78,9 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
             if (x >= 25 && x <= 42) {
                 list.add("Item Auto-Output");
             }
+        }
+        if (isSteamPowered() && mContainer != null && x >= 79 && x <= 97 && y >= 62 && y <= 80) {
+            list.add(mContainer.mSteam + " / " + mContainer.mSteamStorage + " L Steam");
         }
         if (!list.isEmpty())
             drawHoveringText(list, x2, y2, fontRendererObj);
@@ -78,7 +103,7 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
             if (mContainer.mMaxProgressTime > 0) {
                 int tSize = (mProgressBarDirection < 2 ? 20 : 18), tProgress = Math.max(1, Math.min(tSize * mProgressBarAmount, (mContainer.mProgressTime > 0 ? 1 : 0) + (mContainer.mProgressTime * tSize * mProgressBarAmount) / mContainer.mMaxProgressTime)) % (tSize + 1);
 
-                switch (mProgressBarDirection) { // yes, my OCD was mad at me before I did the Tabs.
+                switch (mProgressBarDirection) {
                     case 0:
                         drawTexturedModalRect(x + 78, y + 24, 176, 0, tProgress, 18);
                         break;
@@ -108,6 +133,27 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
                         drawTexturedModalRect(x + 78, y + 24 + 18 - tProgress, 176, 18 - tProgress, 20, tProgress);
                         break;
                 }
+            }
+
+            if (isSteamPowered()) {
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                GL11.glDisable(GL11.GL_LIGHTING);
+                mc.renderEngine.bindTexture(mSteamGaugeTexture);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(x + 80, y + 63, 0.0f);
+                GL11.glScalef(18.0f / 42.0f, 18.0f / 42.0f, 1.0f);
+                drawTexturedModalRect(0, 0, 0, 0, 42, 42);
+                GL11.glPopMatrix();
+
+                if (mContainer.mSteamStorage > 0) {
+                    mSteamGauge.setProgress((double) mContainer.mSteam / mContainer.mSteamStorage);
+                } else {
+                    mSteamGauge.setProgress(0.0);
+                }
+                mSteamGauge.draw(x + 89, y + 72, 12, 4);
             }
         }
     }

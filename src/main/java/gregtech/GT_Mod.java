@@ -15,6 +15,7 @@ import gregtech.api.objects.ItemData;
 import gregtech.api.objects.MaterialStack;
 import gregtech.api.objects.XSTR;
 import gregtech.api.util.*;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.common.GT_DummyWorld;
 import gregtech.common.GT_Network;
 import gregtech.common.GT_Proxy;
@@ -61,7 +62,7 @@ import java.util.regex.Pattern;
 
 @Mod(modid = "gregtech", name = "GregTech", version = "MC1710", useMetadata = false, dependencies = "required-after:IC2; after:Forestry; after:PFAAGeologica; after:Thaumcraft; after:Railcraft; after:appliedenergistics2; after:ThermalExpansion; after:TwilightForest; after:harvestcraft; after:magicalcrops; after:BuildCraft|Transport; after:BuildCraft|Silicon; after:BuildCraft|Factory; after:BuildCraft|Energy; after:BuildCraft|Core; after:BuildCraft|Builders; after:GalacticraftCore; after:GalacticraftMars; after:GalacticraftPlanets; after:ThermalExpansion|Transport; after:ThermalExpansion|Energy; after:ThermalExpansion|Factory; after:RedPowerCore; after:RedPowerBase; after:RedPowerMachine; after:RedPowerCompat; after:RedPowerWiring; after:RedPowerLogic; after:RedPowerLighting; after:RedPowerWorld; after:RedPowerControl; after:UndergroundBiomes; after:TConstruct;  after:Translocator;")
 public class GT_Mod implements IGT_Mod {
-    public static final int VERSION = 509, SUBVERSION = 31;
+    public static final int VERSION = 510, SUBVERSION = 0;
     public static final int TOTAL_VERSION = calculateTotalGTVersion(VERSION, SUBVERSION);
     public static final int REQUIRED_IC2 = 624;
     @Mod.Instance("gregtech")
@@ -74,7 +75,7 @@ public class GT_Mod implements IGT_Mod {
     private final String aTextIC2 = "ic2_";
    
     static {
-        if ((509 != GregTech_API.VERSION) || (509 != GT_ModHandler.VERSION) || (509 != GT_OreDictUnificator.VERSION) || (509 != GT_Recipe.VERSION) || (509 != GT_Utility.VERSION) || (509 != GT_RecipeRegistrator.VERSION) || (509 != Element.VERSION) || (509 != Materials.VERSION) || (509 != OrePrefixes.VERSION)) {
+        if ((510 != GregTech_API.VERSION) || (510 != GT_ModHandler.VERSION) || (510 != GT_OreDictUnificator.VERSION) || (510 != GT_Recipe.VERSION) || (510 != GT_Utility.VERSION) || (510 != GT_RecipeRegistrator.VERSION) || (510 != Element.VERSION) || (510 != Materials.VERSION) || (510 != OrePrefixes.VERSION)) {
             throw new GT_ItsNotMyFaultException("One of your Mods included GregTech-API Files inside it's download, mention this to the Mod Author, who does this bad thing, and tell him/her to use reflection. I have added a Version check, to prevent Authors from breaking my Mod that way.");
         }
     }
@@ -687,11 +688,38 @@ public class GT_Mod implements IGT_Mod {
         ItemStack ILdata0 = ItemList.Bottle_Empty.get(1L, new Object[0]);
         for (FluidContainerRegistry.FluidContainerData tData : FluidContainerRegistry.getRegisteredFluidContainerData()) {
             if ((tData.filledContainer.getItem() == Items.potionitem) && (tData.filledContainer.getItemDamage() == 0)) {
-                GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes.addRecipe(true, new ItemStack[]{ILdata0}, new ItemStack[]{ISdata0}, null, new FluidStack[]{Materials.Water.getFluid(250L)}, null, 4, 1, 0);
-                GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes.addRecipe(true, new ItemStack[]{ISdata0}, new ItemStack[]{ILdata0}, null, null, null, 4, 1, 0);
+                RecipeMaps.fluidCannerRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(ILdata0)
+                        .itemOutputs(ISdata0)
+                        .fluidInputs(Materials.Water.getFluid(250L))
+                        .duration(4)
+                        .eut(1)
+                );
+                RecipeMaps.fluidCannerRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(ISdata0)
+                        .itemOutputs(ILdata0)
+                        .duration(4)
+                        .eut(1)
+                );
             } else {
-                GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes.addRecipe(true, new ItemStack[]{tData.emptyContainer}, new ItemStack[]{tData.filledContainer}, null, new FluidStack[]{tData.fluid}, null, tData.fluid.amount / 62, 1, 0);
-                GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes.addRecipe(true, new ItemStack[]{tData.filledContainer}, new ItemStack[]{GT_Utility.getContainerItem(tData.filledContainer, true)}, null, null, new FluidStack[]{tData.fluid}, tData.fluid.amount / 62, 1, 0);
+                RecipeMaps.fluidCannerRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(tData.emptyContainer)
+                        .itemOutputs(tData.filledContainer)
+                        .fluidInputs(tData.fluid)
+                        .duration(tData.fluid.amount / 62)
+                        .eut(1)
+                );
+                RecipeMaps.fluidCannerRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(tData.filledContainer)
+                        .itemOutputs(GT_Utility.getContainerItem(tData.filledContainer, true))
+                        .fluidOutputs(tData.fluid)
+                        .duration(tData.fluid.amount / 62)
+                        .eut(1)
+                );
             }
         }
         try {
@@ -705,7 +733,14 @@ public class GT_Mod implements IGT_Mod {
                     tOutputs[i] = entry.getKey().copy();
                     i++;
                 }
-                GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(true, new ItemStack[]{tRecipe.getInput()}, tOutputs, null, tChances, null, null, 128, 5, 0);
+                RecipeMaps.centrifugeRecipes.add(
+                    GT_Values.RA.stdBuilder()
+                        .itemInputs(tRecipe.getInput())
+                        .itemOutputs(tOutputs)
+                        .outputChances(tChances)
+                        .duration(128)
+                        .eut(5)
+                );
             }
         } catch (Throwable e) {
             if (GT_Values.D1) {
@@ -715,7 +750,15 @@ public class GT_Mod implements IGT_Mod {
         try {
             for (ISqueezerRecipe tRecipe : RecipeManagers.squeezerManager.recipes()) {
                 if ((tRecipe.getResources().length == 1) && (tRecipe.getFluidOutput() != null)) {
-                    GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes.addRecipe(true, new ItemStack[]{tRecipe.getResources()[0]}, new ItemStack[]{tRecipe.getRemnants()}, null, new int[]{(int) (tRecipe.getRemnantsChance() * 10000)}, null, new FluidStack[]{tRecipe.getFluidOutput()}, 400, 2, 0);
+                    RecipeMaps.fluidExtractionRecipes.add(
+                        GT_Values.RA.stdBuilder()
+                            .itemInputs(tRecipe.getResources()[0])
+                            .itemOutputs(tRecipe.getRemnants())
+                            .outputChances(new int[]{(int) (tRecipe.getRemnantsChance() * 10000)})
+                            .fluidOutputs(tRecipe.getFluidOutput())
+                            .duration(400)
+                            .eut(2)
+                    );
                 }
             }
         } catch (Throwable e) {

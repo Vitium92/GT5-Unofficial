@@ -34,7 +34,7 @@ import static gregtech.api.enums.GT_Values.*;
  * I know this File causes some Errors, because of missing Main Functions, but if you just need to compile Stuff, then remove said erroreous Functions.
  */
 public class GT_Recipe implements Comparable<GT_Recipe> {
-    public static volatile int VERSION = 509;
+    public static volatile int VERSION = 510;
     /**
      * If you want to change the Output, feel free to modify or even replace the whole ItemStack Array, for Inputs, please add a new Recipe, because of the HashMaps.
      */

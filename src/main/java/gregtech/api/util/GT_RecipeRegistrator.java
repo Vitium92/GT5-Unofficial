@@ -120,7 +120,7 @@ public class GT_RecipeRegistrator {
             {"Scythe", s_I + s_P + s_H, s_R + s_F + s_P, s_R + " " + " "},
             {"Scythe", s_H + s_P + s_I, s_P + s_F + s_R, " " + " " + s_R}
     };
-    public static volatile int VERSION = 509;
+    public static volatile int VERSION = 510;
 
     public static void registerMaterialRecycling(ItemStack aStack, Materials aMaterial, long aMaterialAmount, MaterialStack aByproduct) {
         if (GT_Utility.isStackInvalid(aStack)) return;

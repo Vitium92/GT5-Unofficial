@@ -35,7 +35,7 @@ public class GT_OreDictUnificator {
     private static final /*ConcurrentHash*/Map<GT_ItemStack, ItemData> sItemStack2DataMap = new /*ConcurrentHash*/HashMap<GT_ItemStack, ItemData>();
     private static final /*ConcurrentHash*/Map<GT_ItemStack, List<ItemStack>> sUnificationTable = new /*ConcurrentHash*/HashMap<GT_ItemStack, List<ItemStack>>();
     private static final GT_HashSet<GT_ItemStack> sNoUnificationList = new GT_HashSet<GT_ItemStack>();
-    public static volatile int VERSION = 509;
+    public static volatile int VERSION = 510;
     private static int isRegisteringOre = 0, isAddingOre = 0;
     private static boolean mRunThroughTheList = true;
 

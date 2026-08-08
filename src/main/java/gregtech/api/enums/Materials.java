@@ -2018,7 +2018,7 @@ public class Materials implements IColorModulationContainer, ISubTagContainer {
         return this.mName;
     }
 
-    public static volatile int VERSION = 509;
+    public static volatile int VERSION = 510;
     
     public static Collection<Materials> getAll(){
     	return MATERIALS_MAP.values();
