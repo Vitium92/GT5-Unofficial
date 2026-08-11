@@ -17,12 +17,24 @@ public abstract class GT_MetaTileEntity_BasicMachine_Steel extends GT_MetaTileEn
         super(aID, aName, aNameRegional, aDescription, aInputSlotCount, aOutputSlotCount, aBricked);
     }
 
+    public GT_MetaTileEntity_BasicMachine_Steel(int aID, String aName, String aNameRegional, String aDescription, int aInputSlotCount, int aOutputSlotCount, boolean aBricked, int aTankCapacity) {
+        super(aID, aName, aNameRegional, aDescription, aInputSlotCount, aOutputSlotCount, aBricked, aTankCapacity);
+    }
+
     public GT_MetaTileEntity_BasicMachine_Steel(String aName, String aDescription, ITexture[][][] aTextures, int aInputSlotCount, int aOutputSlotCount, boolean aBricked) {
         super(aName, aDescription, aTextures, aInputSlotCount, aOutputSlotCount, aBricked);
+    }
+
+    public GT_MetaTileEntity_BasicMachine_Steel(String aName, String aDescription, ITexture[][][] aTextures, int aInputSlotCount, int aOutputSlotCount, boolean aBricked, int aTankCapacity) {
+        super(aName, aDescription, aTextures, aInputSlotCount, aOutputSlotCount, aBricked, aTankCapacity);
     }
     
     public GT_MetaTileEntity_BasicMachine_Steel(String aName, String[] aDescription, ITexture[][][] aTextures, int aInputSlotCount, int aOutputSlotCount, boolean aBricked) {
         super(aName, aDescription, aTextures, aInputSlotCount, aOutputSlotCount, aBricked);
+    }
+
+    public GT_MetaTileEntity_BasicMachine_Steel(String aName, String[] aDescription, ITexture[][][] aTextures, int aInputSlotCount, int aOutputSlotCount, boolean aBricked, int aTankCapacity) {
+        super(aName, aDescription, aTextures, aInputSlotCount, aOutputSlotCount, aBricked, aTankCapacity);
     }
 
     /*

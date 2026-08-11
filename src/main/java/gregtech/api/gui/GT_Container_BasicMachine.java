@@ -172,7 +172,8 @@ public class GT_Container_BasicMachine extends GT_Container_BasicTank {
         }
 
         addSlotToContainer(new Slot(mTileEntity, 3, 125, 63));
-        addSlotToContainer(new GT_Slot_Render(mTileEntity, tStartIndex++, 53, 63));
+        addSlotToContainer(new GT_Slot_Render(mTileEntity, tStartIndex, 53, 63));
+        addSlotToContainer(new GT_Slot_Render(mTileEntity, tStartIndex + 1, 80, 63));
     }
 
     @Override

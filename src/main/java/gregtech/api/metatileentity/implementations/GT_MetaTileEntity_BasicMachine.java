@@ -75,7 +75,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
      *                  13 = SideFacingPipeInactive
      */
     public GT_MetaTileEntity_BasicMachine(int aID, String aName, String aNameRegional, int aTier, int aAmperage, String aDescription, int aInputSlotCount, int aOutputSlotCount, String aGUIName, String aNEIName, ITexture... aOverlays) {
-        super(aID, aName, aNameRegional, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 1, aDescription, aOverlays);
+        super(aID, aName, aNameRegional, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 2, aDescription, aOverlays);
         mInputSlotCount = Math.max(0, aInputSlotCount);
         mOutputItems = new ItemStack[Math.max(0, aOutputSlotCount)];
         mAmperage = aAmperage;
@@ -84,7 +84,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
     }
 
     public GT_MetaTileEntity_BasicMachine(int aID, String aName, String aNameRegional, int aTier, int aAmperage, String[] aDescription, int aInputSlotCount, int aOutputSlotCount, String aGUIName, String aNEIName, ITexture... aOverlays) {
-        super(aID, aName, aNameRegional, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 1, aDescription, aOverlays);
+        super(aID, aName, aNameRegional, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 2, aDescription, aOverlays);
         mInputSlotCount = Math.max(0, aInputSlotCount);
         mOutputItems = new ItemStack[Math.max(0, aOutputSlotCount)];
         mAmperage = aAmperage;
@@ -93,7 +93,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
     }
 
     public GT_MetaTileEntity_BasicMachine(String aName, int aTier, int aAmperage, String aDescription, ITexture[][][] aTextures, int aInputSlotCount, int aOutputSlotCount, String aGUIName, String aNEIName) {
-        super(aName, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 1, aDescription, aTextures);
+        super(aName, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 2, aDescription, aTextures);
         mInputSlotCount = Math.max(0, aInputSlotCount);
         mOutputItems = new ItemStack[Math.max(0, aOutputSlotCount)];
         mAmperage = aAmperage;
@@ -102,7 +102,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
     }
     
     public GT_MetaTileEntity_BasicMachine(String aName, int aTier, int aAmperage, String[] aDescription, ITexture[][][] aTextures, int aInputSlotCount, int aOutputSlotCount, String aGUIName, String aNEIName) {
-        super(aName, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 1, aDescription, aTextures);
+        super(aName, aTier, OTHER_SLOT_COUNT + aInputSlotCount + aOutputSlotCount + 2, aDescription, aTextures);
         mInputSlotCount = Math.max(0, aInputSlotCount);
         mOutputItems = new ItemStack[Math.max(0, aOutputSlotCount)];
         mAmperage = aAmperage;
@@ -182,7 +182,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
 
     @Override
     public boolean isValidSlot(int aIndex) {
-        return aIndex > 0 && super.isValidSlot(aIndex) && aIndex != OTHER_SLOT_COUNT + mInputSlotCount + mOutputItems.length;
+        return aIndex > 0 && super.isValidSlot(aIndex) && aIndex != OTHER_SLOT_COUNT + mInputSlotCount + mOutputItems.length && aIndex != OTHER_SLOT_COUNT + mInputSlotCount + mOutputItems.length + 1;
     }
 
     @Override

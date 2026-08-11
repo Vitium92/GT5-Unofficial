@@ -432,6 +432,10 @@ public class GT_Loader_MetaTileEntities implements Runnable {
         ItemList.Machine_Steel_Compressor.set(new GT_MetaTileEntity_Compressor_Steel(116, "steelmachine.compressor", "High Pressure Compressor").getStackForm(1L));
         ItemList.Machine_Bronze_AlloySmelter.set(new GT_MetaTileEntity_AlloySmelter_Bronze(118, "bronzemachine.alloysmelter", "Steam Alloy Smelter").getStackForm(1L));
         ItemList.Machine_Steel_AlloySmelter.set(new GT_MetaTileEntity_AlloySmelter_Steel(119, "steelmachine.alloysmelter", "High Pressure Alloy Smelter").getStackForm(1L));
+        ItemList.Machine_Bronze_OreWasher.set(new GT_MetaTileEntity_OreWasher_Bronze(114, "bronzemachine.orewasher", "Steam Ore Washing Plant").getStackForm(1L));
+        ItemList.Machine_Steel_OreWasher.set(new GT_MetaTileEntity_OreWasher_Steel(117, "steelmachine.orewasher", "High Pressure Ore Washing Plant").getStackForm(1L));
+        ItemList.Machine_Bronze_Centrifuge.set(new GT_MetaTileEntity_Centrifuge_Bronze(137, "bronzemachine.centrifuge", "Steam Centrifuge").getStackForm(1L));
+        ItemList.Machine_Steel_Centrifuge.set(new GT_MetaTileEntity_Centrifuge_Steel(138, "steelmachine.centrifuge", "High Pressure Centrifuge").getStackForm(1L));
 
         GT_ModHandler.addCraftingRecipe(ItemList.Machine_Bronze_Furnace.get(1L, new Object[0]), bits, new Object[]{"XXX", "XMX", "XFX", 'M', ItemList.Hull_Bronze_Bricks, 'X', OrePrefixes.pipeSmall.get(Materials.Bronze), 'F', OreDictNames.craftingFurnace});
         GT_ModHandler.addCraftingRecipe(ItemList.Machine_Steel_Furnace.get(1L, new Object[0]), bits, new Object[]{"XXX", "XMX", "XFX", 'M', ItemList.Hull_Steel_Bricks, 'X', OrePrefixes.pipeSmall.get(Materials.Steel), 'F', OreDictNames.craftingFurnace});
@@ -445,6 +449,10 @@ public class GT_Loader_MetaTileEntities implements Runnable {
         GT_ModHandler.addCraftingRecipe(ItemList.Machine_Steel_Compressor.get(1L, new Object[0]), bits, new Object[]{"XXX", aTextPlateMotor, "XXX", 'M', ItemList.Hull_Steel, 'X', OrePrefixes.pipeSmall.get(Materials.Steel), 'P', OreDictNames.craftingPiston});
         GT_ModHandler.addCraftingRecipe(ItemList.Machine_Bronze_AlloySmelter.get(1L, new Object[0]), bits, new Object[]{"XXX", "FMF", "XXX", 'M', ItemList.Hull_Bronze_Bricks, 'X', OrePrefixes.pipeSmall.get(Materials.Bronze), 'F', OreDictNames.craftingFurnace});
         GT_ModHandler.addCraftingRecipe(ItemList.Machine_Steel_AlloySmelter.get(1L, new Object[0]), bits, new Object[]{"XXX", "FMF", "XXX", 'M', ItemList.Hull_Steel_Bricks, 'X', OrePrefixes.pipeSmall.get(Materials.Steel), 'F', OreDictNames.craftingFurnace});
+        GT_ModHandler.addCraftingRecipe(ItemList.Machine_Bronze_OreWasher.get(1L, new Object[0]), bits, new Object[]{"RGR", "WBW", "XPX", 'M', ItemList.Hull_Bronze, 'X', OrePrefixes.pipeSmall.get(Materials.Bronze), 'R', OrePrefixes.rotor.get(Materials.Bronze), 'G', new ItemStack(Blocks.glass, 1), 'W', OreDictNames.craftingWorkBench, 'B', OrePrefixes.plank.get(Materials.Wood), 'P', OrePrefixes.gem.get(Materials.Diamond)});
+        GT_ModHandler.addCraftingRecipe(ItemList.Machine_Steel_OreWasher.get(1L, new Object[0]), bits, new Object[]{"RGR", "WBW", "XPX", 'M', ItemList.Hull_Steel, 'X', OrePrefixes.pipeSmall.get(Materials.Steel), 'R', OrePrefixes.rotor.get(Materials.StainlessSteel), 'G', new ItemStack(Blocks.glass, 1), 'W', OreDictNames.craftingWorkBench, 'B', OrePrefixes.plank.get(Materials.Wood), 'P', OrePrefixes.gem.get(Materials.Diamond)});
+        GT_ModHandler.addCraftingRecipe(ItemList.Machine_Bronze_Centrifuge.get(1L, new Object[0]), bits, new Object[]{"CDC", "WMW", "CBC", 'M', ItemList.Hull_Bronze, 'D', OreDictNames.craftingPiston, 'C', OrePrefixes.pipeSmall.get(Materials.Bronze), 'W', OrePrefixes.cableGt01.get(Materials.Tin), 'B', OrePrefixes.gearGtSmall.get(Materials.Bronze)});
+        GT_ModHandler.addCraftingRecipe(ItemList.Machine_Steel_Centrifuge.get(1L, new Object[0]), bits, new Object[]{"CDC", "WMW", "CBC", 'M', ItemList.Hull_Steel, 'D', OreDictNames.craftingPiston, 'C', OrePrefixes.pipeSmall.get(Materials.Steel), 'W', OrePrefixes.cableGt01.get(Materials.Copper), 'B', OrePrefixes.gearGtSmall.get(Materials.Steel)});
 
 
         ItemList.Locker_ULV.set(new GT_MetaTileEntity_Locker(150, "locker.tier.00", "Ultra Low Voltage Locker", 0).getStackForm(1L));

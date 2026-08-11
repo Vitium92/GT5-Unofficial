@@ -3,7 +3,8 @@ package gregtech.api.gui;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicMachine;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,9 +25,6 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
     public final String mName, mNEI;
     public final byte mProgressBarDirection, mProgressBarAmount;
 
-    private final ResourceLocation mSteamGaugeTexture;
-    private final GT_CircularGaugeDrawable mSteamGauge;
-
     public GT_GUIContainer_BasicMachine(InventoryPlayer aInventoryPlayer, IGregTechTileEntity aTileEntity, String aName, String aTextureFile, String aNEI) {
         this(aInventoryPlayer, aTileEntity, aName, aTextureFile, aNEI, (byte) 0, (byte) 1);
     }
@@ -37,13 +35,6 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
         mProgressBarAmount = (byte) Math.max(1, aProgressBarAmount);
         mName = aName;
         mNEI = aNEI;
-
-        if (aTextureFile.toLowerCase().contains("steel")) {
-            mSteamGaugeTexture = new ResourceLocation("gregtech:textures/gui/steam_dial_steel.png");
-        } else {
-            mSteamGaugeTexture = new ResourceLocation("gregtech:textures/gui/steam_dial.png");
-        }
-        mSteamGauge = new GT_CircularGaugeDrawable();
     }
 
     @Override
@@ -79,7 +70,7 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
                 list.add("Item Auto-Output");
             }
         }
-        if (isSteamPowered() && mContainer != null && x >= 79 && x <= 97 && y >= 62 && y <= 80) {
+        if (isSteamPowered() && mContainer != null && x >= 80 && x <= 96 && y >= 63 && y <= 79) {
             list.add(mContainer.mSteam + " / " + mContainer.mSteamStorage + " L Steam");
         }
         if (!list.isEmpty())
@@ -135,25 +126,12 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
                 }
             }
 
-            if (isSteamPowered()) {
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                GL11.glDisable(GL11.GL_LIGHTING);
-                mc.renderEngine.bindTexture(mSteamGaugeTexture);
-                GL11.glPushMatrix();
-                GL11.glTranslatef(x + 80, y + 63, 0.0f);
-                GL11.glScalef(18.0f / 42.0f, 18.0f / 42.0f, 1.0f);
-                drawTexturedModalRect(0, 0, 0, 0, 42, 42);
-                GL11.glPopMatrix();
-
-                if (mContainer.mSteamStorage > 0) {
-                    mSteamGauge.setProgress((double) mContainer.mSteam / mContainer.mSteamStorage);
-                } else {
-                    mSteamGauge.setProgress(0.0);
+            if (isSteamPowered() && mContainer.mSteam > 0) {
+                net.minecraft.item.ItemStack tDisplayStack = gregtech.api.util.GT_Utility.getFluidDisplayStack(
+                    new net.minecraftforge.fluids.FluidStack(FluidRegistry.getFluid("steam"), mContainer.mSteam), false);
+                if (tDisplayStack != null) {
+                    itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tDisplayStack, x + 80, y + 63);
                 }
-                mSteamGauge.draw(x + 89, y + 72, 12, 4);
             }
         }
     }
