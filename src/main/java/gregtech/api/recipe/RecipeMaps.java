@@ -93,6 +93,7 @@ public class RecipeMaps {
     public static final RecipeMap thermalGeneratorFuels = new RecipeMap(GT_Recipe.GT_Recipe_Map.sHotFuels);
     public static final RecipeMap semiFluidBoilerFuels = new RecipeMap(GT_Recipe.GT_Recipe_Map.sDenseLiquidFuels);
     public static final RecipeMap plasmaGeneratorFuels = new RecipeMap(GT_Recipe.GT_Recipe_Map.sPlasmaFuels);
+    public static final RecipeMap plasmaFuels = plasmaGeneratorFuels;
     public static final RecipeMap magicFuels = new RecipeMap(GT_Recipe.GT_Recipe_Map.sMagicFuels);
     public static final RecipeMap smallNaquadahReactorFuels = new RecipeMap(GT_Recipe.GT_Recipe_Map.sSmallNaquadahReactorFuels);
     public static final RecipeMap largeNaquadahReactorFuels = new RecipeMap(GT_Recipe.GT_Recipe_Map.sLargeNaquadahReactorFuels);

@@ -70,7 +70,7 @@ public class GT_GUIContainer_BasicMachine extends GT_GUIContainerMetaTile_Machin
                 list.add("Item Auto-Output");
             }
         }
-        if (isSteamPowered() && mContainer != null && x >= 80 && x <= 96 && y >= 63 && y <= 79) {
+        if (isSteamPowered() && mContainer != null && x >= 80 && x <= 96 && y >= 68 && y <= 84) {
             list.add(mContainer.mSteam + " / " + mContainer.mSteamStorage + " L Steam");
         }
         if (!list.isEmpty())

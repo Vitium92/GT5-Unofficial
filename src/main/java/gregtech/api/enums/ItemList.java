@@ -526,6 +526,7 @@ public enum ItemList implements IItemContainer {
     Machine_Bronze_AlloySmelter,
     Machine_Bronze_OreWasher,
     Machine_Bronze_Centrifuge,
+    Machine_Bronze_Sifter,
     Machine_Bronze_BlastFurnace,
     Machine_Bricked_BlastFurnace,
     Machine_Steel_Boiler_Lava,
@@ -538,6 +539,7 @@ public enum ItemList implements IItemContainer {
     Machine_Steel_AlloySmelter,
     Machine_Steel_OreWasher,
     Machine_Steel_Centrifuge,
+    Machine_Steel_Sifter,
 
     Hull_Bronze, Hull_Steel, Hull_Bronze_Bricks, Hull_Steel_Bricks,
 

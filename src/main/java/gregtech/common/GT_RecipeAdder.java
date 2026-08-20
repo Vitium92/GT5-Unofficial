@@ -587,6 +587,10 @@ public class GT_RecipeAdder
     }
 
     public boolean addOreWasherRecipe(ItemStack aInput, ItemStack aOutput1, ItemStack aOutput2, ItemStack aOutput3, FluidStack aFluidInput, int aDuration, int aEUt) {
+        return addOreWasherRecipe(aInput, aOutput1, aOutput2, aOutput3, aFluidInput, null, aDuration, aEUt);
+    }
+
+    public boolean addOreWasherRecipe(ItemStack aInput, ItemStack aOutput1, ItemStack aOutput2, ItemStack aOutput3, FluidStack aFluidInput, FluidStack aFluidOutput, int aDuration, int aEUt) {
         if ((aInput == null) || (aFluidInput == null) || ((aOutput1 == null) || (aOutput2 == null) || (aOutput3 == null))) {
             return false;
         }
@@ -598,6 +602,7 @@ public class GT_RecipeAdder
                 .itemInputs(aInput)
                 .itemOutputs(aOutput1, aOutput2, aOutput3)
                 .fluidInputs(aFluidInput)
+                .fluidOutputs(aFluidOutput)
                 .duration(aDuration)
                 .eut(aEUt)
         );

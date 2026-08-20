@@ -389,6 +389,18 @@ public interface IGT_RecipeAdder {
     public boolean addOreWasherRecipe(ItemStack aInput, ItemStack aOutput1, ItemStack aOutput2, ItemStack aOutput3, FluidStack aFluidInput, int aDuration, int aEUt);
 
     /**
+     *
+     * @param aInput   must be != null
+     * @param aFluidInput   must be != null
+     * @param aFluidOutput  can be null
+     * @param aOutput1  must be != null
+     * @param aDuration must be > 0
+     * @param aEUt      should be > 0
+     * @return
+     */
+    public boolean addOreWasherRecipe(ItemStack aInput, ItemStack aOutput1, ItemStack aOutput2, ItemStack aOutput3, FluidStack aFluidInput, FluidStack aFluidOutput, int aDuration, int aEUt);
+
+    /**
      * Adds an Implosion Compressor Recipe
      *
      * @param aInput1  must be != null
